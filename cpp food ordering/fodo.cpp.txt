@@ -1,0 +1,465 @@
+#include <iostream>
+#include <conio.h>
+#include <string>
+
+using namespace std;
+
+static int d;
+
+static int df;
+
+
+
+struct fodo
+{
+    int id;
+    string sname;
+    string *item ;
+    int *amt;
+    int *no;
+    int n;
+    struct fodo* next;
+    struct fodo* prev;
+}*head;
+
+typedef struct tnode
+{
+    int d;
+    int y;
+    int q;
+    string fname;
+    int fcost;
+    tnode *l;
+    tnode *r;
+}tree;
+typedef struct node
+{
+    tree *root;
+    string data;
+    long long pno;
+    string loc;
+    node *next;
+}li;
+li *start=NULL,*temp=NULL;
+
+class fodoc
+{
+    public:
+        fodo *b;
+
+        fodoc()
+        {
+            head = NULL;
+        }
+        void install();
+        void displayshop();
+        void displayshopitem();
+};
+class fodoo:public fodoc
+{
+    public:
+    tree* treeinsert(tree *root,int x,int y,int q,string f,int co)
+{
+    if(root==NULL)
+    {
+        root=new tree;
+        root->l=NULL;
+        root->r=NULL;
+        root->d=x;
+        root->y=y;
+        root->q=q;
+        root->fname=f;
+        root->fcost=co;
+        return root;
+    }
+    else if(x<root->d)
+    {
+        root->l=treeinsert(root->l,x,y,q,f,co);
+    }
+    else if(x>=root->d)
+    {
+        root->r=treeinsert(root->r,x,y,q,f,co);
+    }
+    return root;
+}
+void insert(string a,long long no,string loc)
+{
+    int x;
+    if(start==NULL)
+    {
+        li *t=new li;
+        t->data=a;
+        t->pno=no;
+        t->loc=loc;
+        t->next=NULL;
+        t->root=NULL;
+        start=t;
+        temp=start;
+    }
+    else
+    {
+        li *t=new li;
+        t->data=a;
+        t->pno=no;
+        t->loc=loc;
+        t->root=NULL;
+        t->next=NULL;
+        temp->next=t;
+        temp=t;
+    }
+    double s=0;
+    while(1)
+    {
+        fodo *b=head;
+        int z,y,q;
+        cout<<"\nWanna order more ? \n---------- If yes press 1 -------------------";
+        cin>>z;
+        if(z!=2)
+        {
+            cout<<"\n\nREMEMBER YOUR ORDER NO : "<<df;
+            cout<<"\n\t\tWant to view shop detail ? ";
+            displayshop();
+            displayshopitem();
+        }
+
+        switch(z)
+        {
+            case 1:
+                nift:
+                cout<<"\nEnter shop no : ";
+                cin>>x;
+                if(x>d)
+                    goto nift;
+                cout<<"\nEnter item no : ";
+                cin>>y;
+                cout<<"\nEnter quantity : ";
+                cin>>q;
+                //temp->root=treeinsert(temp->root,x,y,q);
+                if(x==1)
+                {
+                    cout<<endl<<b->item[x-1]<<" "<<b->amt[y-1]*q;
+                    s=s+(b->amt[y-1]*q);
+                    string name=b->item[x-1];
+                    int cost=b->amt[y-1];
+                    temp->root=treeinsert(temp->root,x,y,q,name,cost);
+                }
+                else{
+                    for(int i=1;i<x;i++)
+                    {
+                        b=b->next;
+                    }
+                     cout<<endl<<b->item[x-1]<<" "<<b->amt[y-1]*q;
+                    s=s+(b->amt[y-1]*q);
+                    string name=b->item[x-1];
+                    int cost=b->amt[y-1];
+                    temp->root=treeinsert(temp->root,x,y,q,name,cost);
+                }
+
+                break;
+            case 2:
+                goto endorder;
+                break;
+            default:
+                cout<<"\nPressed invalid button\n";
+                break;
+        }
+    }
+    endorder:
+    cout<<"\n\t\t\t\tBILL : Rs. "<<s;
+    cout<<"\n\n\t\tThank you for your order\n";
+}
+void displaytree(tree *ptr,int level,tree *r)
+{
+    int i;
+    if(ptr!=NULL)
+    {
+        displaytree(ptr->r,level+1,r);
+        cout<<"\n";
+        if(ptr==r)
+            cout<<"Root->";
+        for(i=0;i<level&&ptr!=r;i++)
+            cout<<"     ";
+        cout<<ptr->d<<"*"<<ptr->y;
+        displaytree(ptr->l,level+1,r);
+    }
+
+}
+void fodologo()
+{
+    int i;
+    int smiley=1,smiley1=2;
+    char h=smiley;
+    char h1=smiley1;
+    cout<<"\n\t\t\t\t\t";
+    for(i=0;i<7;i++)
+        cout<<h<<h1;
+    cout<<"\n\t\t\t\t\t"<<h<<"            "<<h;
+    cout<<"\n\t\t\t\t\t"<<h1<<"    FODO    "<<h1<<"\n";
+    cout<<"\t\t\t\t\t"<<h<<"            "<<h<<"\n";
+    cout<<"\t\t\t\t\t";
+    for(i=0;i<7;i++)
+        cout<<h<<h1;
+
+    cout<<"\n\t\t\t\t\t     ----\n\t\t\t\t      A Cosy Way To Order\n\n\t\t\t\t  Available Only At Chromepet";
+}
+void inorder(tree *ptr)
+{
+    if(ptr==NULL)
+    {
+        return;
+    }
+    inorder(ptr->l);
+    cout<<"\n"<<ptr->fname<<"\t\t"<<ptr->fcost<<"\t\t"<<ptr->q<<"\t\t"<<ptr->fcost*ptr->q;
+    inorder(ptr->r);
+}
+void display()
+{
+    li *ab;
+    int i;
+    ab=start;
+    while(ab!=NULL)
+    {
+        tree *ptr=ab->root;
+        cout<<"\n---------------------------------------------------\n\n\t\tORDER TREE\n---------------------------------------------------\n";
+        displaytree(ptr,1,ptr);
+        cout<<"\n\t\tNAME : "<<ab->data<<"\n\n\t\tPHONE NO : "<<ab->pno<<"\n\n\t\tDELIVERY LOCATION : "<<ab->loc<<endl;
+
+        cout<<"ITEM\t\tAMT Rs.\t\tQUANTITY";
+        inorder(ptr);
+        cout<<"\nList over\n";
+        ab=ab->next;
+    }
+}
+void displayparticular()
+{
+    li *ab=temp;
+    int h=4;
+    char h1=h;
+    tree *ptr=ab->root;
+        cout<<"\n---------------------------------------------------\n\n\t\tORDER TREE\n---------------------------------------------------\n";
+        displaytree(ptr,1,ptr);
+        cout<<"\n--------------------------------------------------------------------------------------------------------------------------\n";
+        cout<<"\n\t\t"<<h1<<"NAME : "<<ab->data<<"\n\n\t\t"<<h1<<"PHONE NO : "<<ab->pno<<"\n\n\t\t"<<h1<<"DELIVERY LOCATION : "<<ab->loc<<endl<<endl;
+
+        cout<<"ITEM\t\tAMT Rs.\t\tQUANTITY\n--------------------------------------------";
+        inorder(ptr);
+        cout<<"\nList over\n";
+}
+void fodoorder()
+{
+    df++;
+    string a,loc;
+    long long no;
+    cin.ignore();
+    cout<<"\n\t\tEnter Fodoer Name : ";
+    getline(cin,a);
+
+    cout<<"\n\t\tEnter contact number : ";
+    cin>>no;
+    cout<<"\n\t\tEnter Delivery location : ";
+     cin.ignore();
+    getline(cin,loc);
+
+    insert(a,no,loc);
+    displayparticular();
+}
+};
+void fodoc::install()
+{
+    int x;
+    int i;
+    printf("\nEnter Shop No: (and 0 to exit)");
+    cin>>x;
+    if(x!=0)
+    {
+
+    do
+    {
+        fodo *a = new fodo;
+
+        if (head == NULL)
+        {
+                head = a;
+                head->next = NULL;
+                head->prev = NULL;
+                b=head;
+        }
+        a->next = NULL;
+        a->id=x;
+        cin.sync();
+        cout<<endl<<"Enter Shop Name: ";
+        getline(cin, a->sname);
+        cin.sync();
+        cout<<"\nEnter no of items in shop "<<a->id;
+        cin.ignore();
+        cin>>a->n;
+        a->item= new string[a->n];
+        a->amt=new int[a->n];
+        a->no=new int[a->n];
+        for(i=0;i<a->n;i++)
+        {
+            a->no[i]=i+1;
+            cout<<endl<<"Enter food ["<<i+1<<"] item name : ";
+            cin>>a->item[i];
+            cout<<endl<<"Enter food item amount : Rs.";
+            cin>>a->amt[i];
+        }
+         cout<< "\n------------------------------------------------------------------------------------------------------\n";
+
+        a->prev=b;
+        b->next=a;
+        b=a;
+        d++;
+        cout<<"\nEnter Shop no : ";
+        cin>>x;
+    }while(x!=0);
+
+    }
+    system("cls");
+}
+
+void fodoc::displayshopitem()
+{
+    fodo *h=head;
+    int c,i;
+
+                cout<<endl<< "To view dishes enter Shop number : ";
+                cin>>c;
+
+                if(c<=d&&c!=0)
+                {
+                    for(i=1;i<c;i++)
+                        h=h->next;
+                    cout<< "\n------------------------------------------------------------------------------------------------------\n";
+                    cout<< "\n\t\t\t\t"<<h->id<<" "<<h->sname<< "\n\tNO\tDISH\t\t\t\tCOST (Rs)\n\n";
+                    for(i=0;i<h->n;i++)
+                    {
+                        cout<< "\t"<<h->no[i]<<".\t"<<h->item[i]<<"\t\t\t\t"<<h->amt[i]<<"\n";
+                    }
+                    cout<< "\n------------------------------------------------------------------------------------------------------\n";
+                }
+                else
+                {
+                    cout<< "\n\t\t\t\tInvalid Shop Number\n";
+                }
+
+}
+void fodoc::displayshop()
+{
+    int i,c;
+    cout<<endl<<"The following details were entered: "<<endl;
+    if (d==1)
+    {
+        fodo *p=head;
+        cout<<p->id;
+        cout<< "\t"<<p->sname<<endl;
+    }
+    else if(d==0)
+    {
+        cout<<"\n\t\t\t\tNo shops in Chromepet\n\t\t\tI hope no shops are installed currently\n";
+    }
+    else
+    {
+    for(fodo* p = head; p != NULL; p = p->next)
+    {
+        cout<<p->id;
+        cout<< "\t"<<p->sname<<endl;
+    }
+    cout<< "\nTotal No of Shop(s) : "<<d<<endl;
+
+    }
+
+}
+
+
+
+
+int main()
+{
+system("cls");
+fodoc f;
+fodoo fo;
+int ch,e=1,i;
+char ch1;
+int smiley=1,smiley1=2;
+char h=smiley;
+char h1=smiley1;
+/*
+cout<<"\n\t\t\t\t\t";
+for(i=0;i<7;i++)
+    cout<<h<<h1;
+cout<<"\n\t\t\t\t\t"<<h<<"            "<<h;
+cout<<"\n\t\t\t\t\t"<<h1<<"    FODO    "<<h1<<"\n";
+cout<<"\t\t\t\t\t"<<h<<"            "<<h<<"\n";
+cout<<"\t\t\t\t\t";
+for(i=0;i<7;i++)
+    cout<<h<<h1;
+
+cout<<"\n\t\t\t\t\t     ----\n\t\t\t\t      A Cosy Way To Order\n\n\t\t\t\t  Available Only At Chromepet";
+*/
+while(1)
+{
+  system("cls");
+  fo.fodologo();
+  cout<<"\n\n\n\n\n";
+
+  cout<<"\t\t\t\t\t1.Install\n\t\t\t\t\t"
+
+  <<"2.Fodo Order\n\t\t\t\t\t"
+
+  <<"3.View Cart\n\t\t\t\t\t"
+
+  <<"4.Show Shops \n\t\t\t\t\t"
+
+  <<"5.Exit";
+
+  cout<<"\n\t\t\t\t\tEnter your choice:-> ";
+
+  cin>>ch;
+
+  switch(ch)
+
+  {
+
+    case 1:
+        system("cls");
+        fo.fodologo();
+        f.install();
+        break;
+    case 2:
+        system("cls");
+        fo.fodologo();
+        fo.fodoorder();
+        break;
+    case 3:
+        system("cls");
+        fo.fodologo();
+        fo.display();
+        break;
+    case 4:
+        system("cls");
+        fo.fodologo();
+        f.displayshop();
+        for(;e==1;)
+        {
+            cout<<endl<<"Do you want to view shop ?"<<endl;
+            cout<<endl<<"If yes press Y \nTo exit enter N"<<endl;
+            cin>>ch1;
+            switch(ch1)
+            {
+                case 'y':
+                case 'Y':
+                    f.displayshopitem();
+                    break;
+                case 'n':
+                case 'N':
+                    e=0;
+                    break;
+            }
+        }
+        break;
+    case 5: exit(0);
+  }
+}
+  return 0;
+}
